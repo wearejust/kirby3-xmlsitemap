@@ -41,7 +41,7 @@ Kirby::plugin('wearejust/kirby-xmlsitemap', [
                 return '';
             }
         },
-    ],
+    ],co
 
     'routes' => [
         [
