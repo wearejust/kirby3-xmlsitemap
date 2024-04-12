@@ -518,8 +518,9 @@ class XMLSitemap
 
   private static function getLastmod( Page $p, ?string $langcode = null ) : int {
     $lc = $langcode;
-    if ( $lc == '--' ) {
-      $lc = null;
+    // Set to Kirby default lang when null or --
+    if ( $lc == '--' || $lc === null ) {
+      $lc = 'default';
     }
 
     $lastmod = 0; // default to unix epoch (jan-1-1970)
@@ -531,9 +532,10 @@ class XMLSitemap
         $t       = $p->content( $lc )->get( 'date' );
         $lastmod = strtotime( $t );
       } else {
-        if ( file_exists( $p->contentFile( $lc ) ) ) {
-          $mtime   = filemtime( $p->contentFile( $lc ) );
-          $ctime   = filectime( $p->contentFile( $lc ) );
+        // Always check published file state
+        if ( file_exists( $p->storage()->contentFile('published', $lc) ) ) {
+          $mtime   = filemtime( $p->storage()->contentFile('published',  $lc) );
+          $ctime   = filectime( $p->storage()->contentFile('published',  $lc) );
           $lastmod = max( $mtime, $ctime );
         }
       }
